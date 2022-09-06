@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Exception;
+use RuntimeException;
 
 class Csv
 {
@@ -18,14 +18,11 @@ class Csv
 
     private array $result = [];
 
-    /**
-     * @throws Exception
-     */
     public function open(string $file, bool $header = true, string $mode = 'r'): Csv
     {
         $this->handle = fopen($file, $mode);
         if (!$this->handle) {
-            throw new Exception('Unable to open file ' . $file);
+            throw new RuntimeException('Unable to open file ' . $file);
         }
 
         if ($header) {
@@ -35,13 +32,10 @@ class Csv
         return $this;
     }
 
-    /**
-     * @throws Exception
-     */
     public function parse(callable $callable): Csv
     {
         if (!$this->handle) {
-            throw new Exception('File is not opened for read');
+            throw new RuntimeException('File is not opened for read');
         }
         while (($row = fgetcsv($this->handle)) !== false) {
             if ($this->header) {
@@ -55,14 +49,11 @@ class Csv
         return $this;
     }
 
-    /**
-     * @throws Exception
-     */
-    public function put(string $file, callable $header)
+    public function put(string $file, callable $header): void
     {
         $handle = fopen($file, 'w');
         if (!$this->handle) {
-            throw new Exception('Unable to open file ' . $file);
+            throw new RuntimeException('Unable to open file ' . $file);
         }
         if ($header) {
             $this->header = $header();
@@ -80,7 +71,7 @@ class Csv
         return $this->result[$key] ?? null;
     }
 
-    public function setRow(string $key, array $row)
+    public function setRow(string $key, array $row): void
     {
         $this->result[$key] = $row;
     }
@@ -90,7 +81,7 @@ class Csv
         $this->close();
     }
 
-    private function close()
+    private function close(): void
     {
         if ($this->handle) {
             fclose($this->handle);
