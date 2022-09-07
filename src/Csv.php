@@ -49,7 +49,7 @@ class Csv
         return $this;
     }
 
-    public function put(string $file, callable $header): void
+    public function put(string $file, callable $header = null, callable $result = null): void
     {
         $handle = fopen($file, 'w');
         if (!$this->handle) {
@@ -61,7 +61,13 @@ class Csv
         if ($this->header) {
             fputcsv($handle, $this->header);
         }
-        foreach ($this->result as $row) {
+
+        if ($result) {
+            $rows = $result($this->result);
+        } else {
+            $rows = $this->result;
+        }
+        foreach ($rows as $row) {
             fputcsv($handle, $row);
         }
     }

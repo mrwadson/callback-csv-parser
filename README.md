@@ -18,9 +18,12 @@ Parsing CSV file into new CSV file with changed data and new header.
     cp run.sample.php run.php
     # edit script run.php for your purpose
     ```
-   Used two callback functions (see `run.sample.php`) for parsing every row in csv file and generating new header for result CSV file.
+   Can be used three callback functions (see `run.sample.php`) for parsing csv file:
+   - every row (`rowCallback`)
+   - header (`headCallback`)
+   - whole result (`resultCallback`)
 3. And run php script:
     ```shell
     php run.php
     ```
-Will generate new CSV file: `data/result` file, where `result` - file string in the `config.php` file.
+Will generate new CSV file: `data/result` file, where `result` - result filename (set in the configuration file `config.php`).

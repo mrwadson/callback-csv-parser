@@ -11,4 +11,7 @@ Process::init()
     })->setRowCallback(static function (array $row, Csv $obj) {
         // $obj - current CSV file
         return $row;
+    })->setResultCallback(static function (array $rows) {
+        ksort($rows);
+        return $rows;
     })();

@@ -8,21 +8,15 @@ class Process
 
     private $headCallback;
     private $rowCallback;
+    private $resultCallback;
 
     public array $config;
     private static $instance;
 
-    private function __construct(callable $headCallback = null, callable $rowCallback = null)
-    {
-        $this->headCallback = $headCallback;
-        $this->rowCallback = $rowCallback;
-        $this->config = $this->getConfig();
-    }
-
-    public static function init(callable $rowCallable = null, callable $headCallable = null): self
+    public static function init(callable $rowCallable = null, callable $headCallable = null, callable $resultCallable = null): self
     {
         if (self::$instance === null) {
-            self::$instance = new self($rowCallable, $headCallable);
+            self::$instance = new self($rowCallable, $headCallable, $resultCallable);
         }
         return self::$instance;
     }
@@ -39,9 +33,10 @@ class Process
         return $this;
     }
 
-    public function getConfig(): array
+    public function setResultCallback(callable $resultCallback): self
     {
-        return require self::CONFIG_FILE;
+        $this->resultCallback = $resultCallback;
+        return $this;
     }
 
     public function __invoke()
@@ -49,6 +44,19 @@ class Process
         $parser = new Csv();
         $parser->open($this->config['input'])
             ->parse($this->rowCallback)
-            ->put($this->config['result'], $this->headCallback);
+            ->put($this->config['result'], $this->headCallback, $this->resultCallback);
+    }
+
+    private function __construct(callable $headCallback = null, callable $rowCallback = null, callable $resultCallback = null)
+    {
+        $this->headCallback = $headCallback;
+        $this->rowCallback = $rowCallback;
+        $this->resultCallback = $resultCallback;
+        $this->config = $this->getConfig();
+    }
+
+    private function getConfig(): array
+    {
+        return require self::CONFIG_FILE;
     }
 }
