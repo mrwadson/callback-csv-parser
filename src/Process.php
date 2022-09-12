@@ -1,16 +1,37 @@
-<?php /** @noinspection PhpMissingFieldTypeInspection */
+<?php
 
 namespace App;
 
 class Process
 {
+    /**
+     * @var string
+     */
     private const CONFIG_FILE = __DIR__ . '/../config.php';
 
+    /**
+     * @var callable|null
+     */
     private $headCallback;
+
+    /**
+     * @var callable|null
+     */
     private $rowCallback;
+
+    /**
+     * @var callable|null
+     */
     private $resultCallback;
 
-    public array $config;
+    /**
+     * @var array
+     */
+    public $config;
+
+    /**
+     * @var self
+     */
     private static $instance;
 
     public static function init(callable $rowCallable = null, callable $headCallable = null, callable $resultCallable = null): self

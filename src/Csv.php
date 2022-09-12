@@ -16,9 +16,12 @@ class Csv
      */
     private $handle;
 
-    private array $result = [];
+    /**
+     * @var array
+     */
+    private $result = [];
 
-    public function open(string $file, bool $header = true, string $mode = 'r'): Csv
+    public function open(string $file, bool $header = true, string $mode = 'rb'): Csv
     {
         $this->handle = fopen($file, $mode);
         if (!$this->handle) {
@@ -51,7 +54,7 @@ class Csv
 
     public function put(string $file, callable $header = null, callable $result = null): void
     {
-        $handle = fopen($file, 'w');
+        $handle = fopen($file, 'wb');
         if (!$this->handle) {
             throw new RuntimeException('Unable to open file ' . $file);
         }
