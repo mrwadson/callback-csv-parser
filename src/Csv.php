@@ -3,6 +3,7 @@
 namespace App;
 
 use RuntimeException;
+use function fclose;
 
 class Csv
 {
@@ -86,11 +87,6 @@ class Csv
     }
 
     public function __destruct()
-    {
-        $this->close();
-    }
-
-    private function close(): void
     {
         if ($this->handle) {
             fclose($this->handle);

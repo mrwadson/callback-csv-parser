@@ -2,23 +2,23 @@
 
 Parsing CSV file (using callbacks) into new CSV file with changed data and new header.
 
-## Required
+## Requirements
 
 - PHP >= 7.1
 
 ## Usage
 
-1. Copy `config.sample.php` to `config.php`, `run.sample.php` to `run.php`:
+1. Copy `config.sample.php` to `config.php`, `parse.sample.php` to `parse.php`:
     ```shell
     cp config.sample.php config.php # setup values for current project
-    cp run.sample.php run.php # edit script run.php for your purpose
+    cp parse.sample.php parse.php # edit script parse.php for your purpose
     ```
-2. In `run.php` can be used three callback functions (see `run.sample.php`) for parsing csv file:
+2. In `parse.php` can be used three callback functions (see `parse.sample.php`) for parsing CSV file:
    - Every row (`rowCallback`)
    - Header (`headCallback`)
    - Whole result (`resultCallback`)
 3. Run php script:
     ```shell
-    php run.php # generate new result.csv file
+    php parse.php # generate new result.csv file
     ```
-Will generate new CSV file: `data/result` file, where `result` - result filename (set in the configuration file `config.php`).
+Will generate new CSV file: `data/{result}` file, where `{result}` - result filename (set in the configuration file `config.php`).

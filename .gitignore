@@ -2,5 +2,5 @@
 vendor/
 data/*
 !data/.gitkeep
-run.php
+parse.php
 config.php
