@@ -3,7 +3,6 @@
 namespace App;
 
 use RuntimeException;
-use function fclose;
 
 class Csv
 {
@@ -53,7 +52,7 @@ class Csv
         return $this;
     }
 
-    public function put(string $file, callable $header = null, callable $result = null): void
+    public function put(string $file, callable $header = null, callable $result = null)
     {
         $handle = fopen($file, 'wb');
         if (!$this->handle) {
@@ -81,7 +80,7 @@ class Csv
         return $this->result[$key] ?? null;
     }
 
-    public function setRow(string $key, array $row): void
+    public function setRow(string $key, array $row)
     {
         $this->result[$key] = $row;
     }

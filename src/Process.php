@@ -7,7 +7,7 @@ class Process
     /**
      * @var string
      */
-    private const CONFIG_FILE = __DIR__ . '/../config.php';
+    const CONFIG_FILE = __DIR__ . '/../config.php';
 
     /**
      * @var callable|null

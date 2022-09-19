@@ -4,7 +4,7 @@ Parsing CSV file (using callbacks) into new CSV file with changed data and new h
 
 ## Requirements
 
-- PHP >= 7.1
+- PHP >= 7.0
 
 ## Usage
 
