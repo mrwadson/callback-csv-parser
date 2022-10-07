@@ -59,7 +59,10 @@ class Csv
             throw new RuntimeException('Unable to open file ' . $file);
         }
         if ($header) {
-            $this->header = $header();
+            $headerResult = $header();
+            if (!is_bool($headerResult)) {
+                $this->header = $headerResult;
+            }
         }
         if ($this->header) {
             fputcsv($handle, $this->header);
