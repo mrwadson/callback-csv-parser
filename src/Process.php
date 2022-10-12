@@ -37,18 +37,12 @@ class Process
      */
     private static $instance;
 
-    public static function init(string $config = self::CONFIG_FILE, callable $rowCallable = null, callable $headCallable = null, callable $resultCallable = null): self
+    public static function init(string $config = null, callable $rowCallable = null, callable $headCallable = null, callable $resultCallable = null): self
     {
         if (self::$instance === null) {
             self::$instance = new self($config, $rowCallable, $headCallable, $resultCallable);
         }
         return self::$instance;
-    }
-
-    public function setConfig(string $config): self
-    {
-        $this->config = $config;
-        return $this;
     }
 
     public function setHeadCallback(callable $headCallback): self
@@ -77,7 +71,7 @@ class Process
             ->put($this->config['result'], $this->headCallback, $this->resultCallback);
     }
 
-    private function __construct(string $config, callable $headCallback = null, callable $rowCallback = null, callable $resultCallback = null)
+    private function __construct(string $config = null, callable $headCallback = null, callable $rowCallback = null, callable $resultCallback = null)
     {
         $this->config = $this->getConfig($config);
         $this->headCallback = $headCallback;
@@ -85,9 +79,9 @@ class Process
         $this->resultCallback = $resultCallback;
     }
 
-    private function getConfig(string $config): array
+    private function getConfig(string $config = null): array
     {
-        $config = require $config;
+        $config = require $this->resolveConfigFile($config);
         try {
             $this->validateConfig($config);
         } catch (Throwable $e) {
@@ -95,6 +89,27 @@ class Process
         }
 
         return $config;
+    }
+
+    private function resolveConfigFile(string $config = null): string
+    {
+        if ($config) {
+            return $config;
+        }
+
+        $backtrace = debug_backtrace();
+        $runFile = array_pop($backtrace);
+
+        if (preg_match('/_([^_]*\.php)$/', $basename = basename($runFile['file']), $match)
+            && file_exists($config = __DIR__ . "/../config.$match[1]")) {
+            return $config;
+        }
+
+        if (strpos($basename, '_') === false) {
+            return self::CONFIG_FILE;
+        }
+
+        throw new RuntimeException('Unable to recognize configuration file for "' . $basename . "\"\n");
     }
 
     private function validateConfig(array $config)

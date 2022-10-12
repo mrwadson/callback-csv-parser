@@ -45,7 +45,11 @@ class Csv
                 $row = array_combine($this->header, $row);
             }
             if ($newRow = $callable($row, $this)) {
-                $this->result[] = $newRow;
+                if (is_array($newRow)) {
+                    $this->result[] = $newRow;
+                } else {
+                    $this->result[] = [$newRow];
+                }
             }
         }
 
