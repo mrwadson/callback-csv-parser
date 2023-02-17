@@ -21,7 +21,7 @@ class Csv
      */
     private $result = [];
 
-    public function open(string $file, bool $header = true, string $mode = 'rb'): Csv
+    public function open(string $file, bool $header = false, string $mode = 'rb'): Csv
     {
         $this->handle = fopen($file, $mode);
         if (!$this->handle) {
