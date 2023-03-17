@@ -57,12 +57,12 @@ class Process
         return $this;
     }
 
-    public function __invoke()
+    public function __invoke(): ?array
     {
         $parser = new Csv();
-        $parser->open($this->config['input'], isset($this->config['header']) && $this->config['header'])
+        return $parser->open($this->config['input'], isset($this->config['header']) && $this->config['header'])
             ->parse($this->rowCallback)
-            ->put($this->config['result'], $this->headCallback, $this->resultCallback);
+            ->result($this->config['result'] ?? null, $this->headCallback, $this->resultCallback);
     }
 
     private function __construct(array $config = null, callable $headCallback = null, callable $rowCallback = null, callable $resultCallback = null)
@@ -79,14 +79,10 @@ class Process
         return $config;
     }
 
-    private function validateConfig(array $config)
+    private function validateConfig(array $config): void
     {
         if (!isset($config['input'])) {
             throw new RuntimeException('Input file in config not specified' . "\n");
-        }
-
-        if (!isset($config['result'])) {
-            throw new RuntimeException('Result file in config not specified' . "\n");
         }
 
         if (!file_exists($config['input'])) {

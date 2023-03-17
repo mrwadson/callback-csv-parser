@@ -35,51 +35,66 @@ class Csv
         return $this;
     }
 
-    public function parse(callable $callable): Csv
+    public function parse(callable $callable = null): Csv
     {
         if (!$this->handle) {
             throw new RuntimeException('File is not opened for read');
         }
+
         while (($row = fgetcsv($this->handle)) !== false) {
             if ($this->header) {
                 $row = array_combine($this->header, $row);
             }
-            if ($newRow = $callable($row, $this)) {
-                if (is_array($newRow)) {
-                    $this->result[] = $newRow;
-                } else {
-                    $this->result[] = [$newRow];
+
+            if ($callable) {
+                if ($newRow = $callable($row, $this)) {
+                    if (is_array($newRow)) {
+                        $this->result[] = $newRow;
+                    } else {
+                        $this->result[] = [$newRow];
+                    }
                 }
+            } else {
+                $this->result[] = $row;
             }
         }
 
         return $this;
     }
 
-    public function put(string $file, callable $header = null, callable $result = null)
+    public function result(string $file = null, callable $headCallback = null, callable $resultCallback = null): ? array
     {
-        $handle = fopen($file, 'wb');
-        if (!$this->handle) {
-            throw new RuntimeException('Unable to open file ' . $file);
+        $handle = null;
+        if ($file) {
+            $handle = fopen($file, 'wb');
+            if (!$this->handle) {
+                throw new RuntimeException('Unable to open file ' . $file);
+            }
         }
-        if ($header) {
-            $headerResult = $header();
+        if ($headCallback) {
+            $headerResult = $headCallback();
             if (!is_bool($headerResult)) {
                 $this->header = $headerResult;
             }
         }
-        if ($this->header) {
+        if ($file && $this->header) {
             fputcsv($handle, $this->header);
         }
 
-        if ($result) {
-            $rows = $result($this->result);
+        if ($resultCallback) {
+            $rows = $resultCallback($this->result);
         } else {
             $rows = $this->result;
         }
-        foreach ($rows as $row) {
-            fputcsv($handle, $row);
+
+        if ($file) {
+            foreach ($rows as $row) {
+                fputcsv($handle, $row);
+            }
+            return null;
         }
+
+        return $rows;
     }
 
     public function getRow(string $key)
@@ -87,7 +102,7 @@ class Csv
         return $this->result[$key] ?? null;
     }
 
-    public function setRow(string $key, array $row)
+    public function setRow(string $key, array $row): void
     {
         $this->result[$key] = $row;
     }
