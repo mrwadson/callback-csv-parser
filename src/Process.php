@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace mrwadson;
 
 use RuntimeException;
 
@@ -27,16 +27,22 @@ class Process
     public $config;
 
     /**
-     * @var self
+     * @var array
      */
-    private static $instance;
+    private static $instances = [];
 
     public static function init(array $config = null, callable $rowCallable = null, callable $headCallable = null, callable $resultCallable = null): self
     {
-        if (self::$instance === null) {
-            self::$instance = new self($config, $rowCallable, $headCallable, $resultCallable);
+        $instanceKey = self::getInstanceKey($config);
+        if (!isset(self::$instances[$instanceKey])) {
+            self::$instances[$instanceKey] = new self($config, $rowCallable, $headCallable, $resultCallable);
         }
-        return self::$instance;
+        return self::$instances[$instanceKey];
+    }
+
+    private static function getInstanceKey(array $key): string
+    {
+        return md5(json_encode($key));
     }
 
     public function setHeadCallback(callable $headCallback): self
@@ -60,7 +66,11 @@ class Process
     public function __invoke(): ?array
     {
         $parser = new Csv();
-        return $parser->open($this->config['input'], isset($this->config['header']) && $this->config['header'])
+        return $parser->open(
+                $this->config['input'],
+                isset($this->config['first_row_is_header']) && $this->config['first_row_is_header'],
+                isset($this->config['include_header_in_result']) && $this->config['include_header_in_result']
+            )
             ->parse($this->rowCallback)
             ->result($this->config['result'] ?? null, $this->headCallback, $this->resultCallback);
     }

@@ -1,15 +1,20 @@
 <?php
 
-namespace App;
+namespace mrwadson;
 
 use RuntimeException;
 
 class Csv
 {
     /**
-     * @var array|false|null
+     * @var array
      */
     private $header;
+
+    /**
+     * @var bool
+     */
+    private $includeHeaderInResult;
 
     /**
      * @var false|resource
@@ -21,16 +26,18 @@ class Csv
      */
     private $result = [];
 
-    public function open(string $file, bool $header = false, string $mode = 'rb'): Csv
+    public function open(string $file, bool $firstRowIsHeader = false, bool $includeHeaderInResult = false, string $mode = 'rb'): Csv
     {
         $this->handle = fopen($file, $mode);
         if (!$this->handle) {
             throw new RuntimeException('Unable to open file ' . $file);
         }
 
-        if ($header) {
+        if ($firstRowIsHeader) {
             $this->header = fgetcsv($this->handle);
         }
+
+        $this->includeHeaderInResult = $includeHeaderInResult;
 
         return $this;
     }
@@ -71,7 +78,7 @@ class Csv
                 throw new RuntimeException('Unable to open file ' . $file);
             }
         }
-        if ($headCallback) {
+        if ($this->header && $headCallback) {
             $headerResult = $headCallback();
             if (!is_bool($headerResult)) {
                 $this->header = $headerResult;
@@ -92,6 +99,10 @@ class Csv
                 fputcsv($handle, $row);
             }
             return null;
+        }
+
+        if ($this->header && $this->includeHeaderInResult) {
+            array_unshift($rows, $this->header);
         }
 
         return $rows;

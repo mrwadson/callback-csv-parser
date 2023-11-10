@@ -1,15 +1,16 @@
 <?php
 
-use App\Csv;
-use App\Filter;
-use App\Process;
+use mrwadson\Csv;
+use mrwadson\Filter;
+use mrwadson\Process;
 
 require_once __DIR__ . '/autoload.php';
 
 $config = [
     'input' => __DIR__ . '/data/input.csv',
     'result' => __DIR__ . '/data/result.csv',
-    'header' => true # for header processing
+    'first_row_is_header' => true,
+    'include_header_in_result' => false
 ];
 
 Process::init($config)

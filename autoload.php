@@ -1,7 +1,7 @@
 <?php
 
 spl_autoload_register(static function ($class) {
-    $prefix = 'App\\';
+    $prefix = 'mrwadson\\';
     $baseDir = __DIR__ . '/src/';
 
     $relativeClass = substr($class, strlen($prefix));

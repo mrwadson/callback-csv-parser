@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace mrwadson;
 
 class Filter
 {
