@@ -1,6 +1,6 @@
 ## Callback CSV Parser
 
-Parsing CSV file (using callbacks) into new CSV file with changed data and new (updated) header.
+Parsing CSV file using callbacks into new CSV file with changed data and header.
 
 ## Requirements
 
@@ -12,7 +12,7 @@ Parsing CSV file (using callbacks) into new CSV file with changed data and new (
     ```shell
     cp parse.example.php parse.php # and edit script parse.php for your purpose
     ```
-2. In `parse.php` can be used three callback functions (see `parse.sample.php`) for parsing CSV file:
+2. In `parse.php` can be used three callback functions (see `parse.example.php`) for parsing CSV file:
    - Every row (`rowCallback`)
    - Header (`headCallback`)
    - Whole result (`resultCallback`)
@@ -21,16 +21,16 @@ Parsing CSV file (using callbacks) into new CSV file with changed data and new (
     php parse.php # generate new result.csv file
     ```
 Will generate new CSV file: `data/result.csv` file from the input file `data/input.csv`, 
-where `input.csv` and `result.csv` - csv filenames (set in the configuration array `$config`).
+where `input.csv` and `result.csv` - CSV filenames (set in the configuration array `$config`).
 
 ## Parsing result
 
-To get the result of parsing a CSV file do not include or just comment in the config `result` param:
+To get the result of parsing a CSV file do not include or just comment `result` param in the config:
 
 ```php
 <?php
 
-use App\Process;
+use mrwadson\Process;
 
 require_once __DIR__ . '/autoload.php';
 
@@ -84,7 +84,7 @@ There are:
 - `first_row_is_header` - the first line is the header
 - `include_header_in_result` - include/exclude the header in the result CSV file (only if `first_row_is_header` is `true`)
 
-If you're working with multiple files, it's best to create a directory inside in the `data` directory. So your input and result files
+If you're working with multiple files best way to create a directory inside in the `data` directory. So your input and result files
 will be located by example at `data/my-project/input.csv` and `data/my-project/result.csv` files.
 
 ## Helper class
@@ -92,7 +92,7 @@ will be located by example at `data/my-project/input.csv` and `data/my-project/r
 You can use Helper class for filtering and checking data. For example, to check and filter for some bad words use like this:
 
 ```php
-$result = Helper::matchBadWords(['some', 'bad', 'word', 'check'], 'this sentence has a bad word'); 
+$result = Helper::matchBadWords(['some', 'bad', 'word'], 'this sentence has a bad word'); 
 // result = 2
 ```
 
@@ -103,4 +103,4 @@ $result = Helper::isUrl('https://google.com'); // result = 1
 $result = Helper::isUrl('google.com'); // result = 0
 ```
 
-For get more details, please see [Helper](src/Helper.php) class.
+For more details, please see [Helper](src/Helper.php) class.
