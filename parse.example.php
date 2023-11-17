@@ -1,7 +1,7 @@
 <?php
 
 use mrwadson\Csv;
-use mrwadson\Filter;
+use mrwadson\Helper;
 use mrwadson\Process;
 
 require_once __DIR__ . '/autoload.php';
@@ -18,7 +18,7 @@ Process::init($config)
         return ['head1', 'head2', 'head3'];
     })->setRowCallback(static function (array $row, CSV $csv) {
         foreach ($row as $item) {
-            if (Filter::include(['some', 'bad', 'words'], $item)) {
+            if (Helper::matchBadWords(['some', 'bad', 'words'], $item)) {
                 return null;
             }
         }

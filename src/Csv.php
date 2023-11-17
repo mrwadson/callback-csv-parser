@@ -26,6 +26,16 @@ class Csv
      */
     private $result = [];
 
+    /**
+     * Open CSV file
+     *
+     * @param string $file
+     * @param bool $firstRowIsHeader
+     * @param bool $includeHeaderInResult
+     * @param string $mode
+     *
+     * @return $this
+     */
     public function open(string $file, bool $firstRowIsHeader = false, bool $includeHeaderInResult = false, string $mode = 'rb'): Csv
     {
         $this->handle = fopen($file, $mode);
@@ -42,6 +52,13 @@ class Csv
         return $this;
     }
 
+    /**
+     * Run parse process with callback passed
+     *
+     * @param callable|null $callable
+     *
+     * @return $this
+     */
     public function parse(callable $callable = null): Csv
     {
         if (!$this->handle) {
@@ -69,6 +86,15 @@ class Csv
         return $this;
     }
 
+    /**
+     * Process result with callbacks and get result rows
+     *
+     * @param string|null $file
+     * @param callable|null $headCallback
+     * @param callable|null $resultCallback
+     *
+     * @return array|null
+     */
     public function result(string $file = null, callable $headCallback = null, callable $resultCallback = null): ? array
     {
         $handle = null;
@@ -108,16 +134,34 @@ class Csv
         return $rows;
     }
 
+    /**
+     * Get row from the result
+     *
+     * @param string $key
+     *
+     * @return mixed|null
+     */
     public function getRow(string $key)
     {
         return $this->result[$key] ?? null;
     }
 
+    /**
+     * Set row to the result
+     *
+     * @param string $key
+     * @param array $row
+     *
+     * @return void
+     */
     public function setRow(string $key, array $row): void
     {
         $this->result[$key] = $row;
     }
 
+    /**
+     * Destruct the class
+     */
     public function __destruct()
     {
         if ($this->handle) {

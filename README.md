@@ -86,3 +86,21 @@ There are:
 
 If you're working with multiple files, it's best to create a directory inside in the `data` directory. So your input and result files
 will be located by example at `data/my-project/input.csv` and `data/my-project/result.csv` files.
+
+## Helper class
+
+You can use Helper class for filtering and checking data. For example, to check and filter for some bad words use like this:
+
+```php
+$result = Helper::matchBadWords(['some', 'bad', 'word', 'check'], 'this sentence has a bad word'); 
+// result = 2
+```
+
+Or check if passed value is URL:
+
+```php
+$result = Helper::isUrl('https://google.com'); // result = 1
+$result = Helper::isUrl('google.com'); // result = 0
+```
+
+For get more details, please see [Helper](src/Helper.php) class.
